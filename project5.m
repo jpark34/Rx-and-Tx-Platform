@@ -32,6 +32,15 @@ load('Proj5InputData.mat');
 % Output name in workspace: 
 
 
+output = [];
+counter = 1;
+for i = 1:1094*1000 % replace upper bound with m
+    if(mod(i,1094) < 1025)
+        output[counter] = inputFile[i];
+        counter = counter + 1;
+    end
+end
+
 % Add in channel noise
 % Need to create noise, run through IFFT, add to CP Inseriton output
 % Output - Additive Channel Noise (serial)
