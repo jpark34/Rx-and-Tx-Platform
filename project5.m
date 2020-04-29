@@ -17,6 +17,40 @@ load('Proj5InputData.mat');
 % Input: EncryptedBitStream
 % Output name in workspace: BittoModulationSymbolMapping
 
+%QPSK Mapping
+N = 10240000; %Size of QPSK
+j = 1;
+
+b1 = 0;
+b2 = 0;
+
+I = 0;
+Q = 0;
+
+BittoModulationSymbolMapping = zeros(1, 10240000);
+
+for i=1:2:N
+   b1 = EncryptedBitStream(1, i);
+   b2 = EncryptedBitStream(1, i+1);
+   if b1 == 0 && b2 == 0
+       I = 1/sqrt(2);
+       Q = 1/sqrt(2);
+   end
+   if b1 == 0 && b2 == 1
+       I = 1/sqrt(2);
+       Q = -1/sqrt(2);
+   end
+   if b1 == 1 && b2 == 0
+       I = -1/sqrt(2);
+       Q = 1/sqrt(2);
+   end
+   if b1 == 1 && b2 == 1
+       I = -1/sqrt(2);
+       Q = -1/sqrt(2);
+   end
+   BittoModulationSymbolMapping(j) = complex(I, Q);
+   j = j + 1;
+end
 
 % Serial to parallel
 % IFFT
