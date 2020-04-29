@@ -72,7 +72,7 @@ OFDMSymbolGeneration = ifft(parallelForIFFT,1024,1);
 % Input: OFDMSymbolGeneration
 % Output name in workspace: CPInsertion
 
-serial = reshape(OFDMSymbolGeneration,1,[]);
+serialForCPInsertion = reshape(OFDMSymbolGeneration,1,[]);
 
 
 % Add in channel noise
