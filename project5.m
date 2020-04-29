@@ -121,6 +121,29 @@ ModulationSymbolRecovery = reshape(outputFFT,1,[]);
 % Input: ModulationSymbolRecovery
 % Output name in workspace: ModulationSymboltoEncryptedBits
 
+[rows, columns] = size(ModulationSymbolRecovery);
+
+ModulationSymbolstoEncryptedBits = zeros(1, columns);
+iter = 1;
+
+for x=1:columns
+    b1 = real(ModulationSymbolRecovery(x));
+    b2 = imag(ModulationSymbolRecovery(x));
+    if b1 > 0
+        b1 = 0;
+    elseif b1 < 0
+        b1 = 1;
+    end
+    if b2 > 0
+        b2 = 0;
+    elseif b2 < 0
+        b2 = 1;
+    end
+    ModulationSymbolstoEncryptedBits(1, iter) = b1;
+    ModulationSymbolstoEncryptedBits(1, iter + 1) = b2;
+    iter = iter + 2;
+end
+
 
 % Decrypt Modulation Symbol to Encrypted Bits using Cipher Block Chaining
 % Output - De-encrypted Bit Stream (serial)
