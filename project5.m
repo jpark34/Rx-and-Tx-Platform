@@ -33,6 +33,8 @@ parallel = reshape(serial,1024,[]);
 % Input: 
 % Output name in workspace: 
 
+serial = reshape(parallel,1,[]);
+
 
 % Add in channel noise
 % Need to create noise, run through IFFT, add to CP Inseriton output
@@ -67,6 +69,10 @@ end
 % Output name in workspace: 
 
 parallel = reshape(serial,1024,[]);
+
+
+
+serial = reshape(parallel,1,[]);
 
 
 % Reverse QPSK
