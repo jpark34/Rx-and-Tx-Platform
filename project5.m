@@ -1,5 +1,5 @@
 % Project 5
-% Group 
+% Group 15
 % Members: Jarrett Parker, Liam Fitzpatrick, John Anderson
 
 % Gives the input data given to us
@@ -24,6 +24,8 @@ load('Proj5InputData.mat');
 % Input: 
 % Output name in workspace: 
 
+parallel = reshape(serial,1024,[]);
+
 
 % Parallel to serial
 % Cyclic prefix insertion
@@ -31,15 +33,6 @@ load('Proj5InputData.mat');
 % Input: 
 % Output name in workspace: 
 
-
-output = [];
-counter = 1;
-for i = 1:1094*1000 % replace upper bound with m
-    if(mod(i,1094) < 1025)
-        output[counter] = inputFile[i];
-        counter = counter + 1;
-    end
-end
 
 % Add in channel noise
 % Need to create noise, run through IFFT, add to CP Inseriton output
@@ -53,6 +46,18 @@ end
 % Input: 
 % Output name in workspace: 
 
+CPRemov = [];
+counter = 1;
+[M, N] = size(RxSymbStream);
+
+%CP removal
+for i = 1:N
+    if(mod(i, 1094) >= 70)
+        CPRemov(counter) = RxSymbStream(i+1);
+        counter = counter + 1;
+    end
+end
+
 
 % Serial to parallel
 % FFT
@@ -60,6 +65,8 @@ end
 % Output - Modulation Symbol Recovery (serial)
 % Input: 
 % Output name in workspace: 
+
+parallel = reshape(serial,1024,[]);
 
 
 % Reverse QPSK
