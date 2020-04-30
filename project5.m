@@ -78,8 +78,10 @@ end
 % Input: BittoModulationSymbolMapping
 % Output name in workspace: OFDMSymbolGeneration
 
+%serial to parallel
 parallelForIFFT = reshape(BittoModulationSymbolMapping,1024,[]);
 
+%IFFT
 OFDMSymbolGeneration = ifft(parallelForIFFT,1024,1);
 
 
@@ -89,6 +91,7 @@ OFDMSymbolGeneration = ifft(parallelForIFFT,1024,1);
 % Input: OFDMSymbolGeneration
 % Output name in workspace: CPInsertion
 
+% parallel to serial
 serialForCPInsertion = reshape(OFDMSymbolGeneration,1,[]);
 
 CPInsertion = zeros(1,10940000);
