@@ -113,7 +113,7 @@ end
 
         %need to create noise
 
-noiseIFFT = ifft(GaussNoise,1024,1);
+%noiseIFFT = ifft(GaussNoise,1024,1);
 
         %need to add noise to CPInsertion
 
@@ -123,14 +123,14 @@ noiseIFFT = ifft(GaussNoise,1024,1);
 % Input: AdditiveChannelNoise
 % Output name in workspace: CPRemoval
 
-CPRemoval = zeros(1024,10000);
+CPRemoval = zeros(1,10240000);
 counter = 1;
-[M, N] = size(AdditiveChannelNoise);
+[M, N] = size(CPInsertion);
 
 %CP removal
 for i = 1:N
     if(mod(i, 1094) >= 70)
-        CPRemoval(counter) = AdditiveChannelNoise(i+1);
+        CPRemoval(counter) = CPInsertion(i+1);
         counter = counter + 1;
     end
 end
@@ -184,18 +184,26 @@ end
 % Input: ModulationSymboltoEncryptedBits
 % Output name in workspace: DecryptedBitStream
 
-decryptinput = reshape(ModulationSymboltoEncryptedBits, [20000,1024]);
+decryptInput = reshape(ModulationSymbolstoEncryptedBits, [20000,1024]);
 
 %decryption
 plaintextPost = zeros(20000,1024);
 for i=20000:-1:1
     if(i==1)
-        plaintextPost(i,:) = xor(IV, xor(decryptinput(i,:),key));
+        plaintextPost(i,:) = xor(IV, xor(decryptInput(i,:),key));
     else
-        plaintextPost(i,:) = xor(decryptinput(i-1,:), xor(key, decryptinput(i,:)));
+        plaintextPost(i,:) = xor(decryptInput(i-1,:), xor(key, decryptInput(i,:)));
     end
 end
 %plaintextPost is DecryptedBitStream before reshaping
 
 DecryptedBitStream = reshape(plaintextPost,1, 20480000);
 
+
+for i=1:10240100
+    if InputData(1,i)~=DecryptedBitStream(1,i)
+        disp(i);
+        disp(InputData(1,i));
+        disp(DecryptedBitStream(1,i));
+    end
+end
