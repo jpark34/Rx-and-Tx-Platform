@@ -13,6 +13,23 @@ load('Proj5InputData.mat');
 % Input: InputData
 % Ouput name in workspace: EncryptedBitStream
 
+IV = round(rand([1 1024])); % generates a 1x1024 vector of random numbers (0 or 1)
+key = round(rand([1 1024])); % key is generated randomly
+
+plaintext = reshape(InputData, [20000,1024]);
+ciphertext = zeros(20000,1024);
+
+%encryption
+for i =1:20000
+    if(i == 1) % first 1024 xored with IV and encrypted with key
+        ciphertext(i,:) = xor(key, xor(plaintext(i,:), IV));
+    else % other blocks xored with pervious cipher block and encrypted with key
+        ciphertext(i,:) = xor(key, xor(plaintext(i,:), ciphertext(i-1,:)));
+    end
+end
+EncryptedBitStream = reshape(ciphertext,1, 20480000);
+%EncryptedBitStream is the input encrypted and put back in serial
+
 
 % QPSK on the Encrypted Bit Stream
 % Output - Bit to Modulation Symbol Mapping (serial)
@@ -74,6 +91,8 @@ OFDMSymbolGeneration = ifft(parallelForIFFT,1024,1);
 
 serialForCPInsertion = reshape(OFDMSymbolGeneration,1,[]);
 
+        %need to add CP Insertion code
+
 
 % Add in channel noise
     % Need to create noise, run through IFFT, add to CP Inseriton output
@@ -81,7 +100,11 @@ serialForCPInsertion = reshape(OFDMSymbolGeneration,1,[]);
 % Input: CPInsertion, GaussNoise
 % Output name in workspace: AdditiveChannelNoise
 
+        %need to create noise
+
 noiseIFFT = ifft(GaussNoise,1024,1);
+
+        %need to add noise to CPInsertion
 
 
 % Cyclic prefix removal
@@ -111,7 +134,7 @@ end
 
 parallelForFFT = reshape(CPRemoval,1024,[]);
 
-outputFFT = fft(parallelForFFT, 1024, 1);
+outputFFT = fft(parallelForFFT,1024,1);
 
 ModulationSymbolRecovery = reshape(outputFFT,1,[]);
 
@@ -148,5 +171,20 @@ end
 % Decrypt Modulation Symbol to Encrypted Bits using Cipher Block Chaining
 % Output - De-encrypted Bit Stream (serial)
 % Input: ModulationSymboltoEncryptedBits
-% Output name in workspace: De-encrpyredBitStream
+% Output name in workspace: DecryptedBitStream
+
+decryptinput = reshape(ModulationSymboltoEncryptedBits, [20000,1024]);
+
+%decryption
+plaintextPost = zeros(20000,1024);
+for i=20000:-1:1
+    if(i==1)
+        plaintextPost(i,:) = xor(IV, xor(decryptinput(i,:),key));
+    else
+        plaintextPost(i,:) = xor(decryptinput(i-1,:), xor(key, decryptinput(i,:)));
+    end
+end
+%plaintextPost is DecryptedBitStream before reshaping
+
+DecryptedBitStream = reshape(plaintextPost,1, 20480000);
 
