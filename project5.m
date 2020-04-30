@@ -91,7 +91,18 @@ OFDMSymbolGeneration = ifft(parallelForIFFT,1024,1);
 
 serialForCPInsertion = reshape(OFDMSymbolGeneration,1,[]);
 
-        %need to add CP Insertion code
+CPInsertion = zeros(1,10940000);
+counter = 1;
+for i=1:10000
+    for j = (955 + 1024*(i-1)):1024*i % prefix
+        CPInsertion(counter) = serialForCPInsertion(j);
+        counter = counter + 1;
+    end
+    for k = (1 +(1024*(i-1))):1024*i % remaining
+        CPInsertion(counter) = serialForCPInsertion(k);
+        counter = counter + 1;
+    end
+end
 
 
 % Add in channel noise
