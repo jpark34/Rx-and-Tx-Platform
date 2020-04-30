@@ -110,12 +110,21 @@ end
 % Output - Additive Channel Noise (serial)
 % Input: CPInsertion, GaussNoise
 % Output name in workspace: AdditiveChannelNoise
+        
+additiveNoise = zeros(1, 10940000);
+phase = normrnd(0,.384);
+amplitude = normrnd(0,.25);
 
-        %need to create noise
+for i=1:10940000
+     additiveNoise(i) = complex(amplitude*cos(phase), amplitude*sin(phase));
+    %disp(additiveNoise(i))
+end
 
-%noiseIFFT = ifft(GaussNoise,1024,1);
+parallel3 = reshape(additiveNoise, 1094,10000);
 
-        %need to add noise to CPInsertion
+inverse2 = ifft(parallel3,[],1);
+
+serial3 = reshape(inverse2,1,[]);
 
 
 % Cyclic prefix removal
@@ -200,6 +209,8 @@ end
 DecryptedBitStream = reshape(plaintextPost,1, 20480000);
 
 
+% checks to see what bits are not matching up
+% 1-10240000 match up but 10240001-20480000 do not
 for i=1:10240100
     if InputData(1,i)~=DecryptedBitStream(1,i)
         disp(i);
