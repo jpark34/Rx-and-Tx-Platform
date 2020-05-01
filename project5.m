@@ -230,6 +230,7 @@ wrongbits = 0;
 for p=1:20480000
     if InputData(1,i)~=DecryptedBitStream(1,i)
         wrongbits=wrongbits+1;
+        disp(wrongbits)
     end
 end
 
