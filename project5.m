@@ -7,7 +7,6 @@
 
 load('Proj5InputData.mat');
 
-
 % Encrypt InputData using Cipher Block Chaining
 % Output - Encrpyted Bit Stream (serial)
 % Input: InputData
@@ -37,7 +36,7 @@ EncryptedBitStream = reshape(ciphertext,1, 20480000);
 % Output name in workspace: BittoModulationSymbolMapping
 
 %QPSK Mapping
-N = 10240000; %Size of QPSK
+N = 20480000; %Size of QPSK
 j = 1;
 
 b1 = 0;
@@ -133,9 +132,10 @@ inverseNoise = ifft(parallelNoise,[],1);
 %revert noise from parallel to serial
 serialNoise = reshape(inverseNoise,1,[]);
 
+AdditiveChannelNoise = zeros(1, 10940000);
 %add the noise to CPInsertion
 for i = 1:10940000
-    AdditiveChannelNoise = serialNoise(1,i) + CPInsertion(1,i);
+    AdditiveChannelNoise(1, i) = serialNoise(1, i) + CPInsertion(1, i);
 end
     
 
@@ -221,22 +221,17 @@ for i=20000:-1:1
     end
 end
 %plaintextPost is DecryptedBitStream before reshaping
-
-DecryptedBitStream = reshape(plaintextPost,1, []);
-
+DecryptedBitStream = reshape(plaintextPost, 1, 20480000);
 
 % how we found our bit error rate
 % comment out when turn in
 wrongbits = 0;
+where = 0;
 
-for p=1:20480000
-    if InputData(1,p)~=DecryptedBitStream(1,p)
-        wrongbits=wrongbits+1;
+for i=1:20480000
+    if InputData(1, i)~=DecryptedBitStream(1, i)
+        wrongbits = wrongbits + 1;
     end
 end
 
-disp(wrongbits)
-BitError = wrongbits/20480000;
-disp(BitError)
-InputData(1:10)
-DecryptedBitStream(1:10)
+disp(wrongbits);
