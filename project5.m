@@ -116,15 +116,10 @@ end
         
 %create channel noise
 additiveNoise = zeros(1, 10940000);
-phase = normrnd(0,.384);
-amplitude = normrnd(0,.25);
-
-for i=1:10940000
-     additiveNoise(i) = complex(amplitude*cos(phase), amplitude*sin(phase));
-end
+additiveNoise = normrnd(0, .25, 1, 10940000);
 
 %convert noise from serial to parallel
-parallelNoise = reshape(additiveNoise, 1094,10000);
+parallelNoise = reshape(additiveNoise, 1094, 10000);
 
 %IFFT on noise
 inverseNoise = ifft(parallelNoise,[],1);
@@ -134,9 +129,7 @@ serialNoise = reshape(inverseNoise,1,[]);
 
 AdditiveChannelNoise = zeros(1, 10940000);
 %add the noise to CPInsertion
-for i = 1:10940000
-    AdditiveChannelNoise(1, i) = serialNoise(1, i) + CPInsertion(1, i);
-end
+AdditiveChannelNoise = serialNoise + CPInsertion;
     
 
 % Cyclic prefix removal
