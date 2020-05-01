@@ -134,8 +134,10 @@ inverseNoise = ifft(parallelNoise,[],1);
 serialNoise = reshape(inverseNoise,1,[]);
 
 %add the noise to CPInsertion
-
-AdditiveChannelNoise = serialNoise + CPInsertion;
+for i = 1:10940000
+    AdditiveChannelNoise = serialNoise(i) + CPInsertion(i);
+end
+    
 
 % Cyclic prefix removal
 % Output - CP Removal (serial)
@@ -228,11 +230,13 @@ DecryptedBitStream = reshape(plaintextPost,1, 20480000);
 wrongbits = 0;
 
 for p=1:20480000
-    if InputData(1,i)~=DecryptedBitStream(1,i)
+    if InputData(i)~=DecryptedBitStream(i)
         wrongbits=wrongbits+1;
-        disp(wrongbits)
     end
 end
 
+disp(wrongbits)
 BitError = wrongbits/20480000;
 disp(BitError)
+InputData(1:10)
+DecryptedBitStream(1:10)
