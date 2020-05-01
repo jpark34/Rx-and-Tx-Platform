@@ -37,8 +37,8 @@ EncryptedBitStream = reshape(ciphertext,1, 20480000);
 % Output name in workspace: BittoModulationSymbolMapping
 
 %QPSK Mapping
-N = 10240000; %Size of QPSK
-wrongBits = 1;
+N = 20480000; %Size of QPSK
+j = 1;
 
 b1 = 0;
 b2 = 0;
@@ -67,8 +67,8 @@ for i=1:2:N
        I = -1/sqrt(2);
        Q = -1/sqrt(2);
    end
-   BittoModulationSymbolMapping(wrongBits) = complex(I, Q);
-   wrongBits = wrongBits + 1;
+   BittoModulationSymbolMapping(j) = complex(I, Q);
+   j = j + 1;
 end
 
 
@@ -98,8 +98,8 @@ serialForCPInsertion = reshape(OFDMSymbolGeneration,1,[]);
 CPInsertion = zeros(1,10940000);
 counter = 1;
 for i=1:10000
-    for wrongBits = (955 + 1024*(i-1)):1024*i % prefix
-        CPInsertion(counter) = serialForCPInsertion(wrongBits);
+    for j = (955 + 1024*(i-1)):1024*i % prefix
+        CPInsertion(counter) = serialForCPInsertion(j);
         counter = counter + 1;
     end
     for k = (1 +(1024*(i-1))):1024*i % remaining
@@ -134,6 +134,9 @@ inverseNoise = ifft(parallelNoise,[],1);
 serialNoise = reshape(inverseNoise,1,[]);
 
 %add the noise to CPInsertion
+for i=1:10940000
+    AdditiveChannelNoise(1,i) = serialNoise(1,i) + CPInsertion(1,i);
+end
 
 
 % Cyclic prefix removal
@@ -219,18 +222,29 @@ for i=20000:-1:1
 end
 %plaintextPost is DecryptedBitStream before reshaping
 
-DecryptedBitStream = reshape(plaintextPost,1, 20480000);
+DecryptedBitStream = reshape(plaintextPost,1, []);
 
 
 % how we found our bit error rate
 % comment out when turn in
-wrongBits = 0;
+wrongbits = 0;
 
 for p=1:20480000
-    if InputData(1,i)~=DecryptedBitStream(1,i)
-        wrongBits=wrongBits+1;
+    if InputData(1,p)~=DecryptedBitStream(1,p)
+        wrongbits=wrongbits+1;
     end
 end
 
-BitError = j/20480000;
+disp(wrongbits)
+BitError = wrongbits/20480000;
 disp(BitError)
+InputData(10240000:10240010)
+D
+
+%for p=1:10240010
+ %   if InputData(1,p)~=DecryptedBitStream(1,p)
+ %       disp(p)
+ %       disp(InputData(1,p))
+ %       disp(DecryptedBitStream(1,p))
+ %   end
+%end

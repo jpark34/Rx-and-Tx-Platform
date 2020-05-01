@@ -37,7 +37,7 @@ EncryptedBitStream = reshape(ciphertext,1, 20480000);
 % Output name in workspace: BittoModulationSymbolMapping
 
 %QPSK Mapping
-N = 10240000; %Size of QPSK
+N = 20480000; %Size of QPSK
 j = 1;
 
 b1 = 0;
@@ -133,11 +133,13 @@ inverseNoise = ifft(parallelNoise,[],1);
 %revert noise from parallel to serial
 serialNoise = reshape(inverseNoise,1,[]);
 
+AdditiveChannelNoise=zeros(1,10940000);
+
 %add the noise to CPInsertion
-for i = 1:10940000
-    AdditiveChannelNoise = serialNoise(1,i) + CPInsertion(1,i);
+for i=1:10940000
+    AdditiveChannelNoise(1,i) = serialNoise(1,i) + CPInsertion(1,i);
 end
-    
+
 
 % Cyclic prefix removal
 % Output - CP Removal (serial)
@@ -238,5 +240,11 @@ end
 disp(wrongbits)
 BitError = wrongbits/20480000;
 disp(BitError)
-InputData(1:10)
-DecryptedBitStream(1:10)
+
+%for p=1:10240010
+ %   if InputData(1,p)~=DecryptedBitStream(1,p)
+ %       disp(p)
+ %       disp(InputData(1,p))
+ %       disp(DecryptedBitStream(1,p))
+ %   end
+%end
