@@ -135,7 +135,7 @@ serialNoise = reshape(inverseNoise,1,[]);
 
 %add the noise to CPInsertion
 for i = 1:10940000
-    AdditiveChannelNoise = serialNoise(i) + CPInsertion(i);
+    AdditiveChannelNoise = serialNoise(1,i) + CPInsertion(1,i);
 end
     
 
@@ -222,7 +222,7 @@ for i=20000:-1:1
 end
 %plaintextPost is DecryptedBitStream before reshaping
 
-DecryptedBitStream = reshape(plaintextPost,1, 20480000);
+DecryptedBitStream = reshape(plaintextPost,1, []);
 
 
 % how we found our bit error rate
@@ -230,7 +230,7 @@ DecryptedBitStream = reshape(plaintextPost,1, 20480000);
 wrongbits = 0;
 
 for p=1:20480000
-    if InputData(i)~=DecryptedBitStream(i)
+    if InputData(1,p)~=DecryptedBitStream(1,p)
         wrongbits=wrongbits+1;
     end
 end
