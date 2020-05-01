@@ -135,7 +135,7 @@ serialNoise = reshape(inverseNoise,1,[]);
 
 %add the noise to CPInsertion
 
-
+AdditiveChannelNoise = serialNoise + CPInsertion;
 
 % Cyclic prefix removal
 % Output - CP Removal (serial)
